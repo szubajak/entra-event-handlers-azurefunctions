@@ -9,24 +9,15 @@ namespace Entra.EventHandlers.AzureFunctions.Sample;
 
 public sealed class EmailOtpSendFunction(
     ILogger<EmailOtpSendFunction> logger,
-    IEmailOtpSendHandler handler,
-    IRequestAdapter requestAdapter,
-    IResponseAdapter responseAdapter)
-    : EmailOtpSendFunctionBase(
-        logger,
-        handler,
-        requestAdapter,
-        responseAdapter)
+    IHttpAdapter httpAdapter,
+    IEmailOtpSendHandler handler
+) : EmailOtpSendFunctionBase(logger, httpAdapter, handler)
 {
     [Function("EmailOtpSend")]
     public Task<HttpResponseData> RunAsync(
-        [HttpTrigger(
-            AuthorizationLevel.Function,
-            "post",
-            Route = "emailotpsend"
-        )]
-        HttpRequestData req) =>
-        InvokeAsync(req);
+        [HttpTrigger(AuthorizationLevel.Function, "post", Route = "emailotpsend")]
+            HttpRequestData req
+    ) => InvokeAsync(req);
 
     protected override Task OnExceptionAsync(Exception ex)
     {
